@@ -51,21 +51,7 @@ router.get('/users/me', auth, async (req, res) => {
   res.send(req.user)
 })
 
-router.get('/users/:id', async (req, res) => {
-  const _id = req.params.id
-
-  try {
-    const user = await User.findById(_id)
-    if (!user) {
-      return res.status(404).send()
-    }
-    res.send(user)
-  } catch (err) {
-    res.status(400).send()
-  }
-})
-
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
   const _id = req.params.id
   const updates = Object.keys(req.body)
   const allowedUpdates = ['name', 'email', 'password', 'age']
@@ -78,33 +64,26 @@ router.patch('/users/:id', async (req, res) => {
   }
 
   try {
-    const user = await User.findById(_id)
     updates.forEach((update) => {
-      user[update] = req.body[update]
+      req.user[update] = req.body[update]
     })
 
-    await user.save()
+    await req.user.save()
 
-    if (!user) {
+    if (!req.user) {
       return res.status(404).send()
     }
 
-    res.send(user)
+    res.send(req.user)
   } catch (error) {
     res.status(400).send(error)
   }
 })
 
-router.delete('/users/:id', async (req, res) => {
-  const _id = req.params.id
+router.delete('/users/me', auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(_id)
-
-    if (!user) {
-      return res.status(404).send()
-    }
-
-    res.send(user)
+    await req.user.remove()
+    res.send(req.user)
   } catch (error) {
     res.status(500).send()
   }
