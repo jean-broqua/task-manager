@@ -4,52 +4,57 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const Task = require('./task')
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-    require: true
-  },
-  email: {
-    type: String,
-    trim: true,
-    unique: true,
-    required: true,
-    validade(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error('Invalid email.')
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      trim: true,
+      require: true
+    },
+    email: {
+      type: String,
+      trim: true,
+      unique: true,
+      required: true,
+      validade(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error('Invalid email.')
+        }
       }
-    }
-  },
-  password: {
-    type: String,
-    trim: true,
-    minLength: 7,
-    require: true,
-    validade(value) {
-      if (value.toLowerCase().includes('password')) {
-        throw new Error('Password cannot contain the word password')
+    },
+    password: {
+      type: String,
+      trim: true,
+      minLength: 7,
+      require: true,
+      validade(value) {
+        if (value.toLowerCase().includes('password')) {
+          throw new Error('Password cannot contain the word password')
+        }
       }
-    }
-  },
-  age: {
-    type: Number,
-    default: 0,
-    validade(value) {
-      if (value < 0) {
-        throw new Error('Age must be a positive number.')
+    },
+    age: {
+      type: Number,
+      default: 0,
+      validade(value) {
+        if (value < 0) {
+          throw new Error('Age must be a positive number.')
+        }
       }
-    }
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true
+        }
       }
-    }
-  ]
-})
+    ]
+  },
+  {
+    timestamps: true
+  }
+)
 
 userSchema.virtual('tasks', {
   ref: 'Task',
