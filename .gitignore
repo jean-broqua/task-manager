@@ -1,4 +1,4 @@
 /node_modules
 /playground
 
-.env
+.env-cmdrc
