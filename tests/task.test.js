@@ -20,14 +20,3 @@ test('Should create task for user', async () => {
   expect(task).not.toBeNull()
   expect(task.completed).toEqual(false)
 })
-
-test('Should return correct users task', async () => {
-  const response = await request(app)
-    .get('/tasks')
-    .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
-    .send()
-    .expect(200)
-
-  // Asserts that the correct data is returned
-  expect(response.body.length).toEqual(2)
-})
